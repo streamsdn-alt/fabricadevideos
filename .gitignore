@@ -1,0 +1,5 @@
+# modelos e caches locais
+.u2net/
+__pycache__/
+*.pyc
+tmpchk/
