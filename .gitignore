@@ -5,3 +5,5 @@ __pycache__/
 tmpchk/
 # frames intermediarios da montagem (refazem com scripts/montar.py)
 **/_render/
+# quadros extraidos das referencias (refazem com ffmpeg -vf fps=1)
+referencias/quadros/ref*/

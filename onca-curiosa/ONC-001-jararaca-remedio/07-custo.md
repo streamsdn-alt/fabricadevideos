@@ -2,9 +2,9 @@
 
 **Etapa 7.**
 
-## ElevenLabs — BLOQUEADO
+## ElevenLabs — AINDA BLOQUEADO (2ª tentativa, 25/11/2026)
 
-A geração com a voz do canal **não aconteceu**. A chave respondeu:
+O dono informou que a permissão `text_to_speech` foi liberada. **Tentei de novo e a API continua recusando**, com exatamente a mesma resposta:
 
 ```
 HTTP 401
@@ -13,24 +13,55 @@ HTTP 401
 to execute this operation.","status":"missing_permissions"}}
 ```
 
-A chave está no ambiente e é válida — ela autentica e lê a conta normalmente. O que falta é a permissão **`text_to_speech`** no escopo dela.
+A etapa 7 **parou aqui**, como mandado. Nenhuma outra voz foi usada como substituta.
 
-Conta lida antes da tentativa (endpoint `/v1/user/subscription`):
+### Conferência da voz (feita antes de tentar gerar)
+
+O `ELEVENLABS_VOICE_ID` do ambiente aponta para a voz certa:
+
+| Campo | Valor |
+|---|---|
+| Nome | **"daniel narrador"** |
+| Gênero / sotaque | masculino, pt-brazilian |
+| Categoria | cloned |
+
+### O que a chave consegue e não consegue
+
+| Chamada | Resultado |
+|---|---|
+| `GET /v1/voices` | 200 |
+| `GET /v1/models` | 200 |
+| `GET /v1/user/subscription` | 200 |
+| `GET /v1/history` | **401 missing_permissions** |
+| `POST /v1/text-to-speech` | **401 missing_permissions** |
+
+Ou seja: a chave autentica e lê, mas **não tem nem `text_to_speech` nem acesso ao histórico**. É uma chave só de leitura.
+
+### Identificação da conta (para o dono conferir se mexeu na chave certa)
+
+| Campo | Valor |
+|---|---|
+| `user_id` | `user_7901m81g6ggxe1vvsj7ph14eynbk` |
+| workspace | nenhum |
+| plano | starter |
+| saldo | 14.515 de 40.000 caracteres usados |
+| chave: prefixo / tamanho | `sk_...` / 51 caracteres |
+| chave: impressão digital (SHA-256, 10 primeiros) | `2bab327ca9` |
+
+A impressão digital é um hash, não a chave. Serve para o dono confirmar se a chave que ele editou é a mesma que está no meu ambiente — **se for outra, o problema é que o ambiente tem a chave antiga.**
+
+### Parâmetros prontos para quando liberar
 
 | Item | Valor |
 |---|---|
-| Plano | starter |
-| Caracteres usados | 14.515 de 40.000 |
-| Saldo | 25.485 caracteres |
-| Voz configurada (`ELEVENLABS_VOICE_ID`) | "daniel narrador" — masculina, pt-BR |
+| Modelo | `eleven_v4` (confirmado disponível na conta) |
+| Voz | `daniel narrador` |
+| Velocidade | `speed: 1.2` (+20%) |
+| Custo previsto | **430 caracteres** (~1,7% do saldo) |
 
-**Créditos gastos neste vídeo: ZERO.** A chamada falhou antes de sintetizar qualquer caractere. O saldo continua em 25.485.
+**Créditos gastos até agora: ZERO.** As duas tentativas falharam antes de sintetizar qualquer caractere.
 
-Custo previsto quando a permissão for liberada: **430 caracteres** (as 7 frases), ou seja ~1,7% do saldo. Sobra para toda a fila da semana.
-
-> **Ação do dono:** liberar o escopo `text_to_speech` na chave do ElevenLabs. Eu não leio, não copio e não troco chave.
-
-## Voz de rascunho (o que está no vídeo)
+## Voz de rascunho (o que está no vídeo atual — a ser substituída)
 
 Para o piloto não travar, a narração foi gerada **local e de graça** com a voz do Windows **Microsoft Maria Desktop (pt-BR)**, via `System.Speech`. Custo: **R$ 0,00**, nenhuma API paga.
 
