@@ -1,0 +1,61 @@
+{
+ "total": 26.519,
+ "frases": [
+  {
+   "n": 1,
+   "ini": 0.0,
+   "fim": 2.582,
+   "dur": 2.582,
+   "texto": "Esse buraco na cara da jararaca enxerga calor.",
+   "palavras": 8
+  },
+  {
+   "n": 2,
+   "ini": 2.607,
+   "fim": 7.482,
+   "dur": 4.875,
+   "texto": "É a fosseta loreal, que toda víbora tem: acha a presa pelo calor, como câmera térmica.",
+   "palavras": 16
+  },
+  {
+   "n": 3,
+   "ini": 7.507,
+   "fim": 10.35,
+   "dur": 2.842,
+   "texto": "Mais estranho ainda: o veneno dela derruba a pressão.",
+   "palavras": 9
+  },
+  {
+   "n": 4,
+   "ini": 10.375,
+   "fim": 14.75,
+   "dur": 4.375,
+   "texto": "Dele saiu o captopril, remédio de pressão aprovado em mil novecentos e oitenta e um.",
+   "palavras": 15
+  },
+  {
+   "n": 5,
+   "ini": 14.775,
+   "fim": 17.964,
+   "dur": 3.19,
+   "texto": "Ninguém toma veneno: o remédio foi desenhado a partir dele.",
+   "palavras": 10
+  },
+  {
+   "n": 6,
+   "ini": 17.989,
+   "fim": 22.876,
+   "dur": 4.887,
+   "texto": "Onçômetro: velocidade seis, força quatro, estranheza dez, perigo nove.",
+   "palavras": 9
+  },
+  {
+   "n": 7,
+   "ini": 22.901,
+   "fim": 26.519,
+   "dur": 3.618,
+   "texto": "Rraw! Um buraco que vê calor, e um veneno que virou remédio.",
+   "palavras": 12
+  }
+ ]
+}

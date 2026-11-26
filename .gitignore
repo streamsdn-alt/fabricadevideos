@@ -3,3 +3,5 @@
 __pycache__/
 *.pyc
 tmpchk/
+# frames intermediarios da montagem (refazem com scripts/montar.py)
+**/_render/

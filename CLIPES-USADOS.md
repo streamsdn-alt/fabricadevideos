@@ -10,7 +10,16 @@ Formato de cada linha: canal, vídeo, ID do asset, banco, autor, licença, data 
 
 | Canal | Vídeo | ID do asset | Banco | Autor | Licença | Data de uso |
 |---|---|---|---|---|---|---|
-| — | — | — | — | — | — | — |
+| Onça Curiosa | ONC-001 | 348275825 | iNaturalist | Pedro Alvaro Neves | CC BY | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 348275850 | iNaturalist | Pedro Alvaro Neves | CC BY | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 348275873 | iNaturalist | Pedro Alvaro Neves | CC BY | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 348275890 | iNaturalist | Pedro Alvaro Neves | CC BY | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 183638 | Pixabay | Mujibarsk_786 | Pixabay Content License | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 11721 | Pixabay | Iconikmg | Pixabay Content License | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 23 | Pixabay | DistillVideos | Pixabay Content License | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 1539191 | Pixabay | stevepb | Pixabay Content License | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 8287535 | Pixabay | kravaivan11 | Pixabay Content License | 2026-11-25 |
+| Onça Curiosa | ONC-001 | 1584223 | Pixabay | Bru-nO | Pixabay Content License | 2026-11-25 |
 
 ## Pergunta Insana (PIN)
 
