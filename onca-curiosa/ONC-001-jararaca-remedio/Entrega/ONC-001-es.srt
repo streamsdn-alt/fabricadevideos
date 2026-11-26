@@ -1,27 +1,27 @@
 1
-00:00:00,000 --> 00:00:02,582
+00:00:00,000 --> 00:00:03,039
 Ese hoyo en la cara de la jararaca ve calor.
 
 2
-00:00:02,607 --> 00:00:07,482
+00:00:03,064 --> 00:00:08,335
 Es la fosa loreal, que toda víbora tiene: encuentra a su presa por el calor, como una cámara térmica.
 
 3
-00:00:07,507 --> 00:00:10,350
+00:00:08,360 --> 00:00:11,818
 Más raro todavía: su veneno baja la presión.
 
 4
-00:00:10,375 --> 00:00:14,750
+00:00:11,843 --> 00:00:16,694
 De él salió el captopril, un remedio para la presión aprobado en mil novecientos ochenta y uno.
 
 5
-00:00:14,775 --> 00:00:17,964
+00:00:16,719 --> 00:00:20,297
 Nadie toma veneno: el remedio fue diseñado a partir de él.
 
 6
-00:00:17,989 --> 00:00:22,876
+00:00:20,322 --> 00:00:25,727
 Onzómetro: velocidad seis, fuerza cuatro, rareza diez, peligro nueve.
 
 7
-00:00:22,901 --> 00:00:26,519
+00:00:25,752 --> 00:00:29,917
 ¡Rraw! Un hoyo que ve calor, y un veneno que se volvió remedio.

@@ -1,315 +1,376 @@
-"""ONC-001 - montagem por camadas (etapa 8).  Python + ffmpeg, local e gratis."""
+"""ONC-001 - etapa 8: montagem no estilo oficial da Onca Curiosa.
+
+Regras medidas em referencias/ANALISE-ESTILO.md e agora no GUIA-ONCA.md:
+  - UM cenario so, foto real clara e nitida, sem escurecer nem desfocar
+  - bicho com 20 a 30% da altura, apoiado no terco inferior
+  - contorno branco de adesivo em todo recorte
+  - olho de desenho com anel amarelo na maior parte dos planos
+  - 3 camadas de texto (topo palavra a palavra sem caixa / destaque gigante
+    amarelo no meio / frase que acumula embaixo)
+  - Oncometro como painel sobre a cena, com o nome do bicho
+  - efeitos desenhados, nada de filtro
+"""
 import json, math, os, shutil, subprocess, sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 V = sys.argv[1]
 W, H, FPS = 1080, 1920, 30
 A = os.path.join(V, "assets")
-TMP = os.path.join(V, "_render")
-BG = os.path.join(TMP, "bg")
-OUTF = os.path.join(TMP, "out")
-for d in (BG, OUTF):
-    shutil.rmtree(d, ignore_errors=True)
-    os.makedirs(d)
+TMP = os.path.join(V, "_render"); OUTF = os.path.join(TMP, "out")
+shutil.rmtree(TMP, ignore_errors=True); os.makedirs(OUTF)
 
 TL = json.load(open(os.path.join(V, "audio", "_timeline.json"), encoding="utf-8"))
 FR = {f["n"]: f for f in TL["frases"]}
-TOTAL = TL["total"]
-NFRAMES = int(round(TOTAL * FPS))
+TOTAL = TL["total"]; FIM_FALA = TL["fim_fala"]
+N = int(round(TOTAL * FPS))
 
 F = "C:/Windows/Fonts/"
-def font(name, size):
-    return ImageFont.truetype(F + name, size)
-CAP = font("ariblk.ttf", 66)       # legenda
-CAPS = font("ariblk.ttf", 54)
-BIG = font("impact.ttf", 230)      # numeros gigantes
-TAG = font("ariblk.ttf", 52)       # rotulos
-OM = font("ariblk.ttf", 46)        # oncometro
-HOOK = font("impact.ttf", 118)     # texto-gancho
+def fnt(n, s): return ImageFont.truetype(F + n, s)
+L1   = fnt("ariblk.ttf", 66)    # legenda palavra a palavra
+L1s  = fnt("ariblk.ttf", 54)
+L2   = fnt("impact.ttf", 190)   # destaque gigante
+L2s  = fnt("impact.ttf", 132)
+L3   = fnt("ariblk.ttf", 60)    # frase que acumula
+L3s  = fnt("ariblk.ttf", 48)
+TAGF = fnt("ariblk.ttf", 44)
+OMT  = fnt("ariblk.ttf", 44)
+OML  = fnt("ariblk.ttf", 38)
+OMN  = fnt("ariblk.ttf", 46)
 
-# ---------------------------------------------------------------- cenas
-SC = [
-    dict(n=1, ini=0.00, fim=2.58, kind="hook",    bg=("vid", "px-jungle_leaves-183638.mp4", 1.0)),
-    dict(n=2, ini=2.61, fim=5.05, kind="label",   bg=("vid", "px-jungle_leaves-183638.mp4", 4.0)),
-    dict(n=3, ini=5.05, fim=7.48, kind="thermal", bg=("vid", "px-forest_night-11721.mp4", 2.0)),
-    dict(n=4, ini=7.51, fim=10.35, kind="venom",  bg=("vid", "px-rainforest_floor-23.mp4", 1.0)),
-    dict(n=5, ini=10.37, fim=12.60, kind="year",  bg=("img", "px-pills_medicine-1539191.jpg", 0)),
-    dict(n=6, ini=12.60, fim=14.75, kind="press", bg=("img", "px-blood_pressure_monitor-1584223.jpg", 0)),
-    dict(n=7, ini=14.77, fim=17.96, kind="split", bg=("vid", "px-rainforest_floor-23.mp4", 5.0)),
-    dict(n=8, ini=17.99, fim=22.88, kind="meter", bg=("grad", None, 0)),
-    dict(n=9, ini=22.90, fim=26.52, kind="close", bg=("vid", "px-jungle_leaves-183638.mp4", 7.0)),
-]
-for s in SC:
-    s["f0"] = int(round(s["ini"] * FPS))
-    s["f1"] = int(round(s["fim"] * FPS))
+AMARELO = (245, 221, 11)
+BORDA_AM = (242, 229, 101)
+PAINEL = (30, 29, 34)
+TRILHA = (53, 59, 71)
+VERM = (229, 57, 53)
+VERDE = (60, 220, 120)
 
-# ------------------------------------------------- fundos: extrai com ffmpeg
-def run(c):
-    r = subprocess.run(c, capture_output=True, text=True)
-    if r.returncode:
-        print("ffmpeg erro:", " ".join(c)[:160], r.stderr[-400:]); sys.exit(1)
+# ---------------------------------------------------------------- fundo unico
+BGSRC = os.path.join(A, "fundos", "foto-9618231.jpg")
+_bg = Image.open(BGSRC).convert("RGB")
+_r = max(W / _bg.width, H / _bg.height)
+_bg = _bg.resize((int(_bg.width * _r * 1.12), int(_bg.height * _r * 1.12)), Image.LANCZOS)
+_bg = ImageEnhance.Color(_bg).enhance(1.12)
+_bg = ImageEnhance.Contrast(_bg).enhance(1.05)
 
-for s in SC:
-    kind, src, off = s["bg"]
-    n = s["f1"] - s["f0"] + 2
-    d = os.path.join(BG, f"s{s['n']}")
-    os.makedirs(d, exist_ok=True)
-    if kind == "vid":
-        vf = ("scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
-              "eq=brightness=-0.16:saturation=0.75,gblur=sigma=5")
-        run(["ffmpeg", "-y", "-v", "error", "-stream_loop", "3", "-ss", str(off),
-             "-i", os.path.join(A, src), "-vf", vf, "-r", str(FPS), "-frames:v", str(n),
-             "-q:v", "3", os.path.join(d, "%04d.jpg")])
-    elif kind == "img":
-        im = Image.open(os.path.join(A, src)).convert("RGB")
-        for i in range(n):          # Ken Burns em PIL
-            z = 1.0 + 0.10 * i / max(1, n - 1)
-            cw, ch = int(im.width / z), int(im.height / z)
-            x = (im.width - cw) // 2; y = (im.height - ch) // 2
-            c = im.crop((x, y, x + cw, y + ch))
-            r = min(W / c.width, H / c.height)
-            c = c.resize((max(W, int(c.width * r * 1.02)), max(H, int(c.height * r * 1.02))), Image.LANCZOS)
-            cx = (c.width - W) // 2; cy = (c.height - H) // 2
-            c = c.crop((cx, cy, cx + W, cy + H))
-            c = ImageEnhance.Brightness(c).enhance(0.62)
-            c.filter(ImageFilter.GaussianBlur(2)).save(os.path.join(d, f"{i+1:04d}.jpg"), quality=88)
-    else:                            # gradiente escuro
-        g = Image.new("RGB", (W, H))
-        dr = ImageDraw.Draw(g)
-        for y in range(H):
-            t = y / H
-            dr.line([(0, y), (W, y)], fill=(int(14 + 26 * t), int(10 + 16 * t), int(8 + 10 * t)))
-        for i in range(n):
-            g.save(os.path.join(d, f"{i+1:04d}.jpg"), quality=88)
-print("fundos extraidos")
+def fundo(p):
+    """Ken Burns lento. Sem escurecer, sem desfocar."""
+    z = 1.0 + 0.07 * p
+    cw, ch = int(W / z * (_bg.width / W)), int(H / z * (_bg.height / H))
+    cw = min(cw, _bg.width); ch = min(ch, _bg.height)
+    x = (_bg.width - cw) // 2; y = int((_bg.height - ch) * 0.45)
+    return _bg.crop((x, y, x + cw, y + ch)).resize((W, H), Image.LANCZOS).convert("RGBA")
 
-# ------------------------------------------------------------- recortes
-def load(p):
-    return Image.open(os.path.join(A, p)).convert("RGBA")
-
-HEAD = load("inat-348275825-recorte.png")     # perfil, olhar p/ esquerda
-HEAD2 = load("inat-348275850-recorte.png")
-COIL = load("inat-348275890-recorte.png")
-HEAD3 = load("inat-348275873-recorte.png")
-COILC = COIL.crop(COIL.getbbox())
-HEADC = HEAD2.crop(HEAD2.getbbox())
-PILL = Image.open(os.path.join(A, "px-pills_medicine-8287535.jpg")).convert("RGB")
-
-PIT = (610, 310)      # fosseta loreal no recorte 1400x933
-EYE = (790, 265)
-
-def fit(im, w):
-    r = w / im.width
-    return im.resize((w, int(im.height * r)), Image.LANCZOS)
-
-def ironbow(im):
-    """falsa-cor termica a partir da luminancia"""
-    g = im.convert("L")
-    stops = [(0, (6, 0, 38)), (60, (108, 0, 120)), (120, (210, 60, 40)),
-             (180, (255, 160, 20)), (230, (255, 240, 140)), (255, (255, 255, 255))]
-    lut = []
-    for v in range(256):
-        for i in range(len(stops) - 1):
-            a, ca = stops[i]; b, cb = stops[i + 1]
-            if a <= v <= b:
-                t = (v - a) / (b - a)
-                lut.append(tuple(int(ca[k] + (cb[k] - ca[k]) * t) for k in range(3))); break
-    out = Image.new("RGB", g.size)
-    out.putdata([lut[p] for p in g.getdata()])
-    out = out.convert("RGBA"); out.putalpha(im.getchannel("A"))
+# ------------------------------------------------------- recortes + adesivo
+def sticker(im, esp=13):
+    """contorno branco de adesivo em volta do recorte"""
+    a = im.getchannel("A")
+    g = a.filter(ImageFilter.GaussianBlur(esp * 0.55)).point(lambda v: 255 if v > 38 else 0)
+    g = g.filter(ImageFilter.GaussianBlur(1.2))
+    out = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    branco = Image.new("RGBA", im.size, (255, 255, 255, 255))
+    out.paste(branco, (0, 0), g)
+    out.alpha_composite(im)
     return out
 
-THERM = ironbow(HEAD2)
+def limpa_alfa(im, corte=150):
+    """tira o alfa fantasma (corpo meio transparente) que vira mancha branca"""
+    a = im.getchannel("A").point(lambda v: 255 if v > corte else 0)
+    a = a.filter(ImageFilter.MedianFilter(5)).filter(ImageFilter.GaussianBlur(0.8))
+    out = im.copy(); out.putalpha(a)
+    return out
 
-# ------------------------------------------------------------- texto
-def outlined(d, xy, txt, f, fill=(255, 255, 255), stroke=(0, 0, 0), w=7, anchor="mm"):
-    d.text(xy, txt, font=f, fill=fill, stroke_width=w, stroke_fill=stroke, anchor=anchor)
+def carregar(nome, corte=150):
+    im = Image.open(os.path.join(A, nome)).convert("RGBA")
+    im = limpa_alfa(im, corte)
+    bb = im.getbbox()
+    return im.crop(bb), bb
 
-def words_of(n):
-    """tempos palavra a palavra, proporcionais ao tamanho da palavra"""
+HA, bbA = carregar("inat-348275825-recorte.png")   # perfil p/ ESQUERDA
+HB, bbB = carregar("inat-348275873-recorte.png")   # perfil p/ DIREITA
+POSE_A = {"im": sticker(HA), "olho": (610 - bbA[0], 265 - bbA[1]),
+          "pit": (610 - bbA[0], 310 - bbA[1]), "dir": -1}
+POSE_A["olho"] = (790 - bbA[0], 265 - bbA[1])
+POSE_B = {"im": sticker(HB), "olho": (395, 140), "pit": (265, 145), "dir": 1}
+
+PILL, bbP = carregar("px-pills_medicine-8287535-recorte.png")
+PILL = sticker(PILL)
+
+ALT_BICHO = 500          # 26% de 1920 -> dentro de 20 a 30%
+BASE_BICHO = 1830        # apoiado no terco inferior
+
+def desenha_bicho(img, t, pose, escala=1.0, dx=0):
+    p = pose
+    alt = int(ALT_BICHO * escala)
+    r = alt / p["im"].height
+    sn = p["im"].resize((int(p["im"].width * r), alt), Image.LANCZOS)
+    bal = math.sin(t * 2.3) * 9          # balanco suave: o bicho se mexe
+    resp = 1 + 0.012 * math.sin(t * 3.1)
+    sn = sn.resize((int(sn.width * resp), int(sn.height * resp)), Image.LANCZOS)
+    ox = (W - sn.width) // 2 + dx + int(bal)
+    oy = BASE_BICHO - sn.height + int(math.sin(t * 1.7) * 6)
+    img.alpha_composite(sn, (ox, oy))
+    sc = sn.width / p["im"].width
+    return ox, oy, sc
+
+def olho_cartoon(d, cx, cy, raio, t):
+    """olho de desenho com anel amarelo - assinatura do canal"""
+    pisca = (t * 1000 % 3100) < 160
+    d.ellipse([cx - raio, cy - raio, cx + raio, cy + raio], fill=(250, 213, 11), outline=(20, 16, 8), width=5)
+    ri = int(raio * 0.76)
+    if pisca:
+        d.ellipse([cx - ri, cy - ri, cx + ri, cy + ri], fill=(232, 220, 216))
+        d.arc([cx - ri, cy - int(ri * 0.9), cx + ri, cy + int(ri * 1.1)], 200, 340, fill=(20, 16, 8), width=max(6, ri // 4))
+        return
+    d.ellipse([cx - ri, cy - ri, cx + ri, cy + ri], fill=(246, 240, 238), outline=(20, 16, 8), width=4)
+    pr = int(ri * 0.52)
+    px_, py_ = cx + int(ri * 0.10), cy + int(ri * 0.06)
+    d.ellipse([px_ - pr, py_ - pr, px_ + pr, py_ + pr], fill=(18, 14, 10))
+    br = max(4, pr // 3)
+    d.ellipse([px_ - pr // 2 - br, py_ - pr // 2 - br, px_ - pr // 2 + br, py_ - pr // 2 + br], fill=(255, 255, 255))
+
+# ---------------------------------------------------------------- textos
+def contorno(d, xy, txt, f, fill, w, anchor="mm"):
+    d.text(xy, txt, font=f, fill=fill, stroke_width=w, stroke_fill=(0, 0, 0), anchor=anchor)
+
+CHAVE = {1: {"BURACO", "CALOR"}, 2: {"FOSSETA", "LORETAL", "LOREAL", "CALOR", "TÉRMICA"},
+         3: {"VENENO", "PRESSÃO"}, 4: {"CAPTOPRIL", "OITENTA"}, 5: {"VENENO", "REMÉDIO"},
+         6: {"ONÇÔMETRO"}, 7: {"CALOR", "REMÉDIO"}}
+
+def palavras(n):
     fr = FR[n]; ws = fr["texto"].split()
     tot = sum(len(w) + 1 for w in ws)
     out, t = [], fr["ini"]
     for w in ws:
-        d = fr["dur"] * (len(w) + 1) / tot
-        out.append((w, t, t + d)); t += d
+        dd = fr["dur"] * (len(w) + 1) / tot
+        out.append((w, t, t + dd)); t += dd
     return out
+WORDS = {n: palavras(n) for n in FR}
 
-WORDS = {n: words_of(n) for n in FR}
-SC_FRASE = {1: 1, 2: 2, 3: 2, 4: 3, 5: 4, 6: 4, 7: 5, 8: 6, 9: 7}
+def legenda(img, t):
+    """camada 1: topo, palavra a palavra, SEM caixa, chave em amarelo"""
+    for n, ws in WORDS.items():
+        for w, a, b in ws:
+            if a <= t < b:
+                limpa = w.upper().strip(":,.!?")
+                cor = AMARELO if limpa in CHAVE.get(n, set()) else (255, 255, 255)
+                d = ImageDraw.Draw(img)
+                f = L1 if len(limpa) <= 11 else L1s
+                contorno(d, (W // 2, 330), limpa, f, cor, 9)
+                return
 
-def draw_caption(img, t, sc):
-    """legenda palavra por palavra no topo, dentro da area segura"""
-    n = SC_FRASE[sc["n"]]
-    cur = [w for w in WORDS[n] if w[1] <= t < w[2]]
-    if not cur:
-        return
-    word = cur[0][0].upper().strip(":,.!")
+def destaque(img, txt, p_in, cor=AMARELO, y=720, f=None):
+    """camada 2: destaque gigante amarelo, entra batendo"""
     d = ImageDraw.Draw(img)
-    f = CAP if len(word) <= 11 else CAPS
-    bb = d.textbbox((W // 2, 300), word, font=f, anchor="mm", stroke_width=8)
-    pad = 26
-    box = Image.new("RGBA", (bb[2] - bb[0] + pad * 2, bb[3] - bb[1] + pad), (0, 0, 0, 155))
-    img.alpha_composite(box, (bb[0] - pad, bb[1] - pad // 2))
-    outlined(d, (W // 2, 300), word, f, w=8)
+    k = min(1.0, p_in * 5.0)
+    s = 1 + 0.28 * (1 - k) ** 2
+    ff = f or L2
+    if s > 1.04:
+        ff = ImageFont.truetype(F + ("impact.ttf" if ff in (L2, L2s) else "ariblk.ttf"),
+                                max(30, int(ff.size / s)))
+    contorno(d, (W // 2, y), txt, ff, cor, 15)
 
-# ------------------------------------------------------------- cenas
-def scene_hook(img, p, t):
+def frase_fica(img, linhas):
+    """camada 3: frase que fica e acumula"""
     d = ImageDraw.Draw(img)
-    z = 1.0 + 0.055 * math.sin(p * math.pi)            # zoom de impacto
-    sn = fit(HEAD, int(1180 * z))
-    sc = sn.width / HEAD.width
-    ox, oy = (W - sn.width) // 2, 760 - int(40 * p)
-    img.alpha_composite(sn, (ox, oy))
-    px, py = ox + int(PIT[0] * sc), oy + int(PIT[1] * sc)
-    r = int((62 + 16 * math.sin(p * 13)) * sc)          # circulo pulsando
-    for k, wd in ((0, 9), (10, 5)):
-        d.ellipse([px - r - k, py - r - k, px + r + k, py + r + k],
-                  outline=(255, 40, 40, 255), width=wd)
-    d.line([(px - r - 160, py - 150), (px - r - 20, py - 20)], fill=(255, 40, 40), width=9)
-    if True:
-        outlined(d, (W // 2, 1585), "ESSE BURACO", HOOK, (255, 232, 60), w=10)
-        outlined(d, (W // 2, 1700), "VÊ CALOR", HOOK, (255, 232, 60), w=10)
+    y = 1150
+    for txt in linhas:
+        f = L3 if len(txt) <= 22 else L3s
+        contorno(d, (W // 2, y), txt, f, (255, 255, 255), 10)
+        y += 86
 
-def cartoon_eye(d, cx, cy, rx, ry, blink):
-    if blink:
-        d.line([(cx - rx, cy), (cx + rx, cy)], fill=(12, 10, 8), width=max(8, ry // 3))
-        return
-    d.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=(255, 255, 255), outline=(12, 10, 8), width=8)
-    d.ellipse([cx - rx // 3, cy - ry // 2, cx + rx // 2, cy + ry], fill=(12, 10, 8))
-    d.ellipse([cx - rx // 4, cy - ry // 3, cx + rx // 12, cy], fill=(255, 255, 255))
+# ------------------------------------------------------- efeitos desenhados
+def marcador_pit(d, px, py, r, t, cor=(250, 213, 11)):
+    pr = int(r + 7 * math.sin(t * 7))
+    d.ellipse([px - pr, py - pr, px + pr, py + pr], outline=cor, width=9)
+    d.ellipse([px - pr - 9, py - pr - 9, px + pr + 9, py + pr + 9], outline=(0, 0, 0), width=4)
 
-def scene_label(img, p, t):
+def cone_calor(img, px, py, t, dirx):
+    """cone de calor saindo da fosseta - vetorial, nao filtro"""
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    L = 680; ab = 205
+    tip = (px + dirx * 40, py)
+    far = (px + dirx * L, py)
+    for i, (cor, f) in enumerate([((255, 90, 30, 112), 1.0), ((255, 170, 40, 124), 0.66), ((255, 240, 120, 150), 0.33)]):
+        d.polygon([tip, (far[0], far[1] - int(ab * f)), (far[0], far[1] + int(ab * f))], fill=cor)
+    for k in range(3):
+        pts = []
+        off = (k - 1) * 74
+        for s in range(0, 22):
+            x = px + dirx * (60 + s * 24)
+            y = py + off + int(16 * math.sin(s * 0.7 + t * 6 + k))
+            pts.append((x, y))
+        d.line(pts, fill=(255, 245, 160, 235), width=10, joint="curve")
+    img.alpha_composite(lay)
+
+def carimbo(img, txt, cx, cy, t, ang=-11):
+    lay = Image.new("RGBA", (760, 240), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.rounded_rectangle([10, 10, 750, 230], 22, outline=VERM, width=12)
+    d.text((380, 122), txt, font=fnt("impact.ttf", 128), fill=VERM, anchor="mm")
+    lay = lay.rotate(ang, expand=True, resample=Image.BICUBIC)
+    k = min(1.0, t * 6)
+    s = 1 + 1.2 * (1 - k) ** 2
+    lay = lay.resize((int(lay.width / s), int(lay.height / s)), Image.LANCZOS)
+    img.alpha_composite(lay, (cx - lay.width // 2, cy - lay.height // 2))
+
+def x_vermelho(d, cx, cy, s):
+    for w, c in ((34, (0, 0, 0)), (22, VERM)):
+        d.line([(cx - s, cy - s), (cx + s, cy + s)], fill=c, width=w)
+        d.line([(cx + s, cy - s), (cx - s, cy + s)], fill=c, width=w)
+
+def check_verde(d, cx, cy, s):
+    pts = [(cx - s, cy), (cx - s // 4, cy + int(s * 0.7)), (cx + s, cy - int(s * 0.8))]
+    d.line(pts, fill=(0, 0, 0), width=34, joint="curve")
+    d.line(pts, fill=VERDE, width=22, joint="curve")
+
+OM = [("VELOCIDADE", 6, (53, 163, 250)), ("FORÇA", 4, (240, 94, 57)),
+      ("ESTRANHEZA", 10, (189, 89, 249)), ("PERIGO", 9, (245, 201, 8))]
+
+def oncometro(img, p):
+    """painel SOBRE a cena, com o nome do bicho. Nao e cena dedicada."""
+    x0, x1, y0, y1 = 104, 980, 820, 1315
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.rounded_rectangle([x0, y0, x1, y1], 42, fill=PAINEL + (238,), outline=BORDA_AM, width=6)
+    cx = (x0 + x1) // 2
+    d.rounded_rectangle([cx - 230, y0 - 38, cx + 230, y0 + 38], 38, fill=AMARELO)
+    d.text((cx, y0), "ONÇÔMETRO", font=OMT, fill=(20, 16, 10), anchor="mm")
+    d.text((cx, y0 + 92), "JARARACA", font=OMN, fill=(255, 255, 255), anchor="mm")
+    ty0, ty1 = 487, 882
+    for i, (nome, val, cor) in enumerate(OM):
+        ap = max(0.0, min(1.0, (p - i * 0.15) / 0.17))
+        y = y0 + 168 + i * 82
+        d.text((x0 + 26, y), nome, font=OML, fill=(255, 255, 255), anchor="lm")
+        d.rounded_rectangle([ty0, y - 22, ty1, y + 22], 22, fill=TRILHA)
+        w = int((ty1 - ty0) * (val / 10) * ap)
+        if w > 24:
+            d.rounded_rectangle([ty0, y - 22, ty0 + w, y + 22], 22, fill=cor)
+        if ap > 0.85:
+            d.text((933, y), str(val), font=OMT, fill=cor, anchor="lm")
+    img.alpha_composite(lay)
+
+def cartela_final(img, p, t):
+    """cartela de gancho para o proximo video, no padrao do canal"""
     d = ImageDraw.Draw(img)
-    sn = fit(HEAD2, 1150); sc = sn.width / HEAD2.width
-    ox, oy = (W - sn.width) // 2, 800
-    img.alpha_composite(sn, (ox, oy))
-    ex, ey = ox + int(EYE[0] * sc), oy + int(EYE[1] * sc)
-    blink = (t * 1000 % 2600) < 150                      # pisca
-    cartoon_eye(d, ex, ey, int(78 * sc), int(66 * sc), blink)
-    px, py = ox + int(PIT[0] * sc), oy + int(PIT[1] * sc)
-    d.ellipse([px - 52, py - 52, px + 52, py + 52], outline=(255, 215, 0), width=8)
-    slide = int(420 * max(0.0, 1 - p * 4))               # rotulo entra deslizando
-    lx = 120 - slide
-    d.line([(px - 40, py + 40), (lx + 330, 1560)], fill=(255, 215, 0), width=7)
-    d.rounded_rectangle([lx, 1500, lx + 700, 1600], 18, fill=(255, 215, 0))
-    d.text((lx + 350, 1550), "FOSSETA LOREAL", font=TAG, fill=(20, 16, 10), anchor="mm")
-
-def scene_thermal(img, p, t):
+    veu = Image.new("RGBA", (W, H), (12, 20, 10, int(165 * min(1.0, p * 4))))
+    img.alpha_composite(veu)
     d = ImageDraw.Draw(img)
-    sn = fit(THERM, 1150)
-    img.alpha_composite(sn, ((W - sn.width) // 2, 790))
-    y = int(480 + (1500 - 480) * ((t * 0.9) % 1.0))      # varredura
-    d.line([(0, y), (W, y)], fill=(120, 255, 210, 180), width=5)
-    for yy in range(480, 1500, 7):
-        d.line([(0, yy), (W, yy)], fill=(0, 0, 0, 60), width=1)
-    d.rounded_rectangle([150, 1520, 930, 1625], 18, fill=(10, 220, 180))
-    d.text((540, 1572), "CÂMERA TÉRMICA", font=TAG, fill=(6, 30, 26), anchor="mm")
+    contorno(d, (W // 2, 620), "PRÓXIMO:", L3, (255, 255, 255), 10)
+    contorno(d, (W // 2, 810), "200 MILHÕES", L2s, AMARELO, 14)
+    contorno(d, (W // 2, 950), "DELES", L2s, AMARELO, 14)
+    # silhueta de cupinzeiro desenhada, estilo da referencia
+    cx, base, hh = W // 2, 1560, 360
+    pts = []
+    for i in range(41):
+        u = i / 40.0
+        x = cx - 250 + u * 500
+        y = base - int(hh * math.exp(-((u - 0.5) * 3.05) ** 2))
+        pts.append((x, y))
+    pts += [(cx + 250, base), (cx - 250, base)]
+    d.polygon(pts, fill=(18, 22, 16))
+    d.line(pts + [pts[0]], fill=AMARELO, width=10, joint="curve")
+    for u in (0.32, 0.5, 0.68):
+        x = cx - 250 + u * 500
+        y = base - int(hh * math.exp(-((u - 0.5) * 3.05) ** 2))
+        d.line([(x, y + 26), (x, base - 16)], fill=AMARELO, width=5)
+    for i, (ox, oy) in enumerate([(-285, -250), (290, -200)]):
+        contorno(d, (cx + ox, base + oy), "?", fnt("impact.ttf", 120), AMARELO, 10)
+    contorno(d, (W // 2, 1690), "E A RAINHA? NINGUÉM ACHOU.", L3s, (255, 255, 255), 9)
 
-def scene_venom(img, p, t):
-    d = ImageDraw.Draw(img)
-    sn = fit(HEADC, 1240)
-    ent = min(1.0, p * 2.6)
-    ease = 1 - (1 - ent) ** 3
-    x = int((W - sn.width) // 2 - (1 - ease) * 1150)
-    bob = int(16 * math.sin(t * 7))                      # balanco de passo
-    img.alpha_composite(sn, (x, 880 + bob))
-    if p > 0.45:
-        k = (p - 0.45) / 0.55
-        sh = int(16 * math.sin(k * 40) * (1 - k))        # tremida
-        outlined(d, (W // 2 + sh, 1600), "VENENO", BIG, (235, 40, 40), w=12)
+# ---------------------------------------------------------------- beats
+B = [dict(n=1, ini=FR[1]["ini"], fim=FR[1]["fim"], k="hook"),
+     dict(n=2, ini=FR[2]["ini"], fim=FR[2]["fim"], k="pit"),
+     dict(n=3, ini=FR[3]["ini"], fim=FR[3]["fim"], k="venom"),
+     dict(n=4, ini=FR[4]["ini"], fim=FR[4]["fim"], k="year"),
+     dict(n=5, ini=FR[5]["ini"], fim=FR[5]["fim"], k="nao"),
+     dict(n=6, ini=FR[6]["ini"], fim=FR[6]["fim"], k="meter"),
+     dict(n=7, ini=FR[7]["ini"], fim=FIM_FALA, k="close"),
+     dict(n=8, ini=FIM_FALA, fim=TOTAL, k="card")]
 
-def scene_year(img, p, t):
-    d = ImageDraw.Draw(img)
-    k = min(1.0, p * 3.5)
-    s = 1 + 2.2 * (1 - k) ** 2                           # numero batendo
-    f = ImageFont.truetype(F + "impact.ttf", max(40, int(230 / s)))
-    outlined(d, (W // 2, 1040), "1981", f, (255, 232, 60), w=11)
-    outlined(d, (W // 2, 1330), "CAPTOPRIL", TAG, (255, 255, 255), w=7)
+def beat(t):
+    for b in B:
+        if b["ini"] <= t < b["fim"]:
+            return b, (t - b["ini"]) / max(0.1, b["fim"] - b["ini"])
+    return B[-1], 1.0
 
-def scene_press(img, p, t):
-    d = ImageDraw.Draw(img)
-    y = int(900 + 300 * min(1.0, p * 1.6))               # seta caindo
-    d.polygon([(W // 2 - 90, y - 150), (W // 2 + 90, y - 150), (W // 2 + 90, y),
-               (W // 2 + 170, y), (W // 2, y + 170), (W // 2 - 170, y), (W // 2 - 90, y)],
-              fill=(60, 220, 120))
-    outlined(d, (W // 2, 1560), "PRESSÃO", TAG, (255, 255, 255), w=7)
-
-def scene_split(img, p, t):
-    d = ImageDraw.Draw(img)
-    top, bot = 560, 1420
-    sn = fit(HEADC, 700)
-    img.alpha_composite(sn, (-80, top + 240))
-    pl = PILL.copy(); r = 560 / pl.width
-    pl = pl.resize((560, int(pl.height * r)), Image.LANCZOS).crop((0, 0, 560, min(860, int(pl.height * r))))
-    img.paste(pl, (540, top + 120))
-    d.line([(W // 2, top), (W // 2, bot)], fill=(255, 255, 255), width=8)
-    if p > 0.25:
-        cx, cy, s = 270, top + 430, 150                  # X vermelho
-        d.line([(cx - s, cy - s), (cx + s, cy + s)], fill=(235, 40, 40), width=30)
-        d.line([(cx + s, cy - s), (cx - s, cy + s)], fill=(235, 40, 40), width=30)
-    if p > 0.5:
-        cx, cy = 810, top + 430                          # check verde
-        d.line([(cx - 110, cy), (cx - 20, cy + 95)], fill=(60, 220, 120), width=30)
-        d.line([(cx - 20, cy + 95), (cx + 125, cy - 105)], fill=(60, 220, 120), width=30)
-    outlined(d, (270, 1530), "VENENO", TAG, (235, 90, 90), w=7)
-    outlined(d, (810, 1530), "REMÉDIO", TAG, (120, 230, 160), w=7)
-
-METER = [("VELOCIDADE", 6, (90, 190, 255)), ("FORÇA", 4, (255, 170, 60)),
-         ("ESTRANHEZA", 10, (200, 120, 255)), ("PERIGO", 9, (235, 70, 70))]
-
-def scene_meter(img, p, t):
-    d = ImageDraw.Draw(img)
-    sil = fit(HEAD3, 1000)
-    sh = Image.new("RGBA", sil.size, (0, 0, 0, 0))
-    sh.putalpha(sil.getchannel("A").point(lambda a: int(a * 0.30)))
-    img.alpha_composite(sh, ((W - sil.width) // 2, 980))
-    y0 = 560
-    for i, (nome, val, cor) in enumerate(METER):
-        ap = max(0.0, min(1.0, (p - i * 0.17) / 0.20))   # uma barra a cada ~1,2 s
-        y = y0 + i * 190
-        d.text((110, y), nome, font=OM, fill=(255, 255, 255))
-        d.rounded_rectangle([110, y + 62, 970, y + 124], 14, fill=(255, 255, 255, 45))
-        w = int(860 * (val / 10) * ap)
-        if w > 14:
-            d.rounded_rectangle([110, y + 62, 110 + w, y + 124], 14, fill=cor)
-        if ap > 0.9:
-            outlined(d, (930, y + 30), str(val), OM, cor, w=6)
-
-def scene_close(img, p, t):
-    d = ImageDraw.Draw(img)
-    sn = fit(HEAD3, int(1120 * (1 + 0.05 * p)))
-    img.alpha_composite(sn, ((W - sn.width) // 2, 740))
-    if p < 0.12:                                          # flash
-        fl = Image.new("RGBA", (W, H), (255, 255, 255, int(190 * (1 - p / 0.12))))
-        img.alpha_composite(fl)
-    import random
-    rnd = random.Random(7)
-    for i in range(60):                                   # confete
-        cx = rnd.randrange(0, W)
-        cy = int((rnd.randrange(300, 1700) + t * 320 * (0.6 + rnd.random())) % 1750) + 170
-        c = [(255, 232, 60), (235, 70, 70), (120, 230, 160), (90, 190, 255)][i % 4]
-        d.rectangle([cx, cy, cx + 13, cy + 22], fill=c)
-    outlined(d, (W // 2, 1600), "VÊ CALOR.", HOOK, (255, 232, 60), w=10)
-    outlined(d, (W // 2, 1716), "VIROU REMÉDIO.", TAG, (255, 255, 255), w=7)
-
-DRAW = dict(hook=scene_hook, label=scene_label, thermal=scene_thermal, venom=scene_venom,
-            year=scene_year, press=scene_press, split=scene_split, meter=scene_meter, close=scene_close)
-
-# ------------------------------------------------------------- render
-for i in range(NFRAMES):
+print("renderizando", N, "quadros |", round(TOTAL, 2), "s")
+for i in range(N):
     t = i / FPS
-    sc = next((s for s in SC if s["f0"] <= i <= s["f1"]), SC[-1])
-    p = (i - sc["f0"]) / max(1, sc["f1"] - sc["f0"])
-    bgf = os.path.join(BG, f"s{sc['n']}", f"{i - sc['f0'] + 1:04d}.jpg")
-    if not os.path.exists(bgf):
-        bgf = sorted(os.listdir(os.path.join(BG, f"s{sc['n']}")))[-1]
-        bgf = os.path.join(BG, f"s{sc['n']}", bgf)
-    img = Image.open(bgf).convert("RGBA")
-    DRAW[sc["kind"]](img, p, t)
-    draw_caption(img, t, sc)
-    img.convert("RGB").save(os.path.join(OUTF, f"{i:05d}.jpg"), quality=92)
-    if i % 120 == 0:
-        print("frame", i, "/", NFRAMES)
+    b, p = beat(t)
+    img = fundo(t / TOTAL)
+    d = ImageDraw.Draw(img)
+    linhas = []
 
-print("frames prontos:", NFRAMES)
+    if b["k"] == "card":
+        cartela_final(img, p, t)
+        img.convert("RGB").save(os.path.join(OUTF, f"{i:05d}.jpg"), quality=92)
+        continue
+
+    pose = POSE_B if b["k"] == "venom" else POSE_A
+    esc = 1.06 if b["k"] in ("hook", "pit") else 1.0
+    ox, oy, sc = desenha_bicho(img, t, pose, esc)
+    d = ImageDraw.Draw(img)
+    ex, ey = ox + int(pose["olho"][0] * sc), oy + int(pose["olho"][1] * sc)
+    px, py = ox + int(pose["pit"][0] * sc), oy + int(pose["pit"][1] * sc)
+    raio = int(86 * sc * (1.25 if b["k"] in ("hook", "pit") else 1.0))
+
+    if b["k"] == "hook":
+        marcador_pit(d, px, py, int(62 * sc), t)
+        d.line([(px - pose["dir"] * 230, py - 210), (px - pose["dir"] * 60, py - 50)],
+               fill=(0, 0, 0), width=16)
+        d.line([(px - pose["dir"] * 230, py - 210), (px - pose["dir"] * 60, py - 50)],
+               fill=AMARELO, width=9)
+        destaque(img, "ESSE BURACO", p, AMARELO, 660, L2s)
+        destaque(img, "VÊ CALOR", p, AMARELO, 800, L2)
+    elif b["k"] == "pit":
+        if t >= b["ini"] + 1.9:
+            cone_calor(img, px, py, t, pose["dir"])
+        d = ImageDraw.Draw(img)
+        marcador_pit(d, px, py, int(58 * sc), t, AMARELO)
+        destaque(img, "FOSSETA LOREAL", p, AMARELO, 700, L2s)
+        if t >= b["ini"] + 2.4:
+            linhas.append("ACHA A PRESA PELO CALOR")
+        if t >= b["ini"] + 3.7:
+            linhas.append("COMO CÂMERA TÉRMICA")
+    elif b["k"] == "venom":
+        carimbo(img, "VENENO", W // 2, 700, max(0.01, t - b["ini"]))
+        if t >= b["ini"] + 1.4:
+            linhas.append("DERRUBA A PRESSÃO")
+    elif b["k"] == "year":
+        pr = PILL.resize((620, int(PILL.height * 620 / PILL.width)), Image.LANCZOS)
+        ent = min(1.0, p * 3.0); ease = 1 - (1 - ent) ** 3
+        img.alpha_composite(pr, (int(W - 660 + (1 - ease) * 760), 1010))
+        destaque(img, "1981", p, AMARELO, 700)
+        linhas.append("VIROU REMÉDIO DE PRESSÃO")
+    elif b["k"] == "nao":
+        d2 = ImageDraw.Draw(img)
+        pr = PILL.resize((470, int(PILL.height * 470 / PILL.width)), Image.LANCZOS)
+        img.alpha_composite(pr, (W - 500, 1120))
+        d2 = ImageDraw.Draw(img)
+        if p > 0.18:
+            x_vermelho(d2, 235, 1480, 118)
+        if p > 0.52:
+            check_verde(d2, W - 265, 1290, 108)
+        linhas.append("NINGUÉM TOMA VENENO")
+        if p > 0.45:
+            linhas.append("O REMÉDIO FOI DESENHADO")
+    elif b["k"] == "meter":
+        oncometro(img, p)
+    elif b["k"] == "close":
+        destaque(img, "VÊ CALOR.", p, AMARELO, 700, L2s)
+        if p > 0.35:
+            linhas.append("E VIROU REMÉDIO.")
+
+    if b["k"] != "meter":
+        d = ImageDraw.Draw(img)
+        olho_cartoon(d, ex, ey, raio, t)
+    else:
+        d = ImageDraw.Draw(img)
+        olho_cartoon(d, ex, ey, int(86 * sc), t)
+
+    if linhas:
+        frase_fica(img, linhas)
+    legenda(img, t)
+    img.convert("RGB").save(os.path.join(OUTF, f"{i:05d}.jpg"), quality=92)
+    if i % 150 == 0:
+        print("  quadro", i, "/", N)
+
+print("frames prontos:", N)

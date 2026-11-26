@@ -1,27 +1,27 @@
 1
-00:00:00,000 --> 00:00:02,582
+00:00:00,000 --> 00:00:03,039
 Esse buraco na cara da jararaca enxerga calor.
 
 2
-00:00:02,607 --> 00:00:07,482
+00:00:03,064 --> 00:00:08,335
 É a fosseta loreal, que toda víbora tem: acha a presa pelo calor, como câmera térmica.
 
 3
-00:00:07,507 --> 00:00:10,350
+00:00:08,360 --> 00:00:11,818
 Mais estranho ainda: o veneno dela derruba a pressão.
 
 4
-00:00:10,375 --> 00:00:14,750
+00:00:11,843 --> 00:00:16,694
 Dele saiu o captopril, remédio de pressão aprovado em mil novecentos e oitenta e um.
 
 5
-00:00:14,775 --> 00:00:17,964
+00:00:16,719 --> 00:00:20,297
 Ninguém toma veneno: o remédio foi desenhado a partir dele.
 
 6
-00:00:17,989 --> 00:00:22,876
+00:00:20,322 --> 00:00:25,727
 Onçômetro: velocidade seis, força quatro, estranheza dez, perigo nove.
 
 7
-00:00:22,901 --> 00:00:26,519
+00:00:25,752 --> 00:00:29,917
 Rraw! Um buraco que vê calor, e um veneno que virou remédio.

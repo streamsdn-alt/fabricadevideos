@@ -1,12 +1,12 @@
 # ONC-001 — Postagem
 
-> ⚠️ **NÃO PUBLICAR.** Piloto aguardando aprovação do dono. Reprovado na etapa 9 (Técnica 6/10: sem trilha e com voz de rascunho). Ver `../09-avaliacao.md`.
+> ⚠️ **NÃO PUBLICAR.** Piloto aguardando aprovação do dono. Versão 2, no estilo oficial do canal. Reprovado na etapa 9 por **um motivo só: sem trilha** (Técnica 6/10). Estilo 10/10. Ver `../09-avaliacao.md`.
 
 ## Arquivos
 
 | Arquivo | O que é |
 |---|---|
-| `ONC-001-jararaca-remedio.mp4` | vídeo 1080×1920, 26,53 s |
+| `ONC-001-jararaca-remedio.mp4` | vídeo 1080×1920, **31,63 s** |
 | `ONC-001-capa-universal.jpg` | capa 1080×1920 |
 | `ONC-001-capa-tiktok.jpg` | capa 1080×1440 |
 | `ONC-001-pt.srt` / `-en.srt` / `-es.srt` | legendas PT / EN / ES |
@@ -67,7 +67,5 @@ Este conteúdo não é para crianças.
 
 ## Pendências antes de publicar
 
-1. Permissão `text_to_speech` na chave do ElevenLabs → regravar a narração com a voz do canal.
-2. Trilha e efeitos da Biblioteca de Áudio do YouTube na pasta `musicas/`.
-3. Remontar (etapas 7 e 8) e reavaliar. Roteiro, fatos, cenas e assets já estão aprovados.
-4. Marcar a divulgação de conteúdo sintético conforme a regra de cada plataforma: a narração é voz sintética. O rótulo de IA segue a decisão do dono.
+1. **Trilha e efeitos da Biblioteca de Áudio do YouTube na pasta `musicas/`** — é a única coisa que falta. Com ela, é só refazer a mixagem (nem precisa re-renderizar os quadros) e reavaliar.
+2. Marcar a divulgação de conteúdo sintético conforme a regra de cada plataforma: a narração é voz sintética (ElevenLabs). O rótulo de IA segue a decisão do dono.

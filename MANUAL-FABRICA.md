@@ -76,6 +76,22 @@ Notas de 0 a 10; aprova só com **TODAS ≥ 8**:
 - **Ritmo:** mudança visual a cada 2 a 4 s, duração dentro do guia.
 - **Técnica:** áudio sem corte nem estouro, trilha abaixo da voz, legenda sincronizada e dentro da área segura, sem marca-d'água, logo ou texto cortado.
 - **Licenças:** todo asset com crédito e licença permitida no `06-creditos.md`.
+- **Estilo do canal:** os 8 itens medíveis abaixo. **Qualquer um fora reprova.**
+
+### Estilo do canal — os 8 itens medíveis
+
+Saíram da análise dos vídeos reais (`referencias/ANALISE-ESTILO.md`) e valem para a Onça Curiosa. Cada canal terá os seus, no guia dele.
+
+| # | Item | Como medir |
+|---|---|---|
+| 1 | **Brilho médio do vídeo ≥ 110** (0–255) | média da luminância de 1 em cada 10 quadros |
+| 2 | **Um cenário só** do começo ao fim | folha de quadros |
+| 3 | **Bicho com 20 a 30% da altura**, apoiado no terço inferior | altura do recorte ÷ altura do vídeo |
+| 4 | **Contorno branco de adesivo** em todo recorte | borda do bicho e dos objetos |
+| 5 | **Olho de desenho com anel amarelo** na maior parte dos planos | contar os planos com bicho que têm o olho |
+| 6 | **3 camadas de texto** | topo palavra a palavra sem caixa / destaque gigante amarelo no meio / frase que acumula embaixo |
+| 7 | **Onçômetro como painel sobre a cena, com o nome do bicho** | nunca cena dedicada de tela cheia |
+| 8 | **Efeitos desenhados** | nada de filtro de imagem (falsa-cor, varredura, desfoque artístico) |
 
 Reprovação sempre com cena/tempo e motivo.
 

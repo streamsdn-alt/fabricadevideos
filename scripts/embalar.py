@@ -39,29 +39,57 @@ srt(os.path.join(ENT, "ONC-001-en.srt"), EN)
 srt(os.path.join(ENT, "ONC-001-es.srt"), ES)
 
 # ------------------------------------------------------------------ capas
-BASE = Image.open(os.path.join(V, "_render", "out", "00012.jpg")).convert("RGB")
+# A capa e composta do zero (fundo + bicho + olho), nao reaproveita quadro
+# do video: quadro ja tem as 3 camadas de texto e a capa pede poucas palavras.
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-def capa(w, h, nome):
-    im = BASE.copy()
-    r = max(w / im.width, h / im.height)
+def comp_capa(w, h, nome):
+    bgp = os.path.join(V, "assets", "fundos", "foto-9618231.jpg")
+    im = Image.open(bgp).convert("RGB")
+    r = max(w / im.width, h / im.height) * 1.04
     im = im.resize((int(im.width * r), int(im.height * r)), Image.LANCZOS)
-    im = im.crop(((im.width - w) // 2, 0, (im.width - w) // 2 + w, h))
-    im = ImageEnhance.Contrast(im).enhance(1.12)
-    d = ImageDraw.Draw(im)
-    big = ImageFont.truetype(F + "impact.ttf", int(w * 0.155))
-    sml = ImageFont.truetype(F + "impact.ttf", int(w * 0.105))
-    y = int(h * 0.80)
-    d.text((w // 2, y), "VENENO", font=big, fill=(235, 50, 50),
-           stroke_width=int(w * 0.011), stroke_fill=(0, 0, 0), anchor="mm")
-    d.text((w // 2, y + int(w * 0.135)), "→ REMÉDIO", font=big, fill=(255, 232, 60),
-           stroke_width=int(w * 0.011), stroke_fill=(0, 0, 0), anchor="mm")
-    d.text((w // 2, int(h * 0.09)), "1981", font=sml, fill=(255, 255, 255),
-           stroke_width=int(w * 0.009), stroke_fill=(0, 0, 0), anchor="mm")
-    im.save(os.path.join(ENT, nome), quality=93)
-    print("capa:", nome, im.size)
+    x = (im.width - w) // 2; y = int((im.height - h) * 0.45)
+    im = im.crop((x, y, x + w, y + h))
+    im = ImageEnhance.Color(im).enhance(1.14)
+    im = ImageEnhance.Contrast(im).enhance(1.08).convert("RGBA")
 
-capa(1080, 1920, "ONC-001-capa-universal.jpg")
-capa(1080, 1440, "ONC-001-capa-tiktok.jpg")
+    sn = Image.open(os.path.join(V, "assets", "_capa-bicho.png")).convert("RGBA")
+    alt = int(h * 0.30)
+    rr = alt / sn.height
+    sn = sn.resize((int(sn.width * rr), alt), Image.LANCZOS)
+    ox = (w - sn.width) // 2; oy = int(h * 0.955) - sn.height
+    im.alpha_composite(sn, (ox, oy))
+
+    d = ImageDraw.Draw(im)
+    # olho de desenho com anel amarelo (assinatura do canal)
+    sc = sn.width / Image.open(os.path.join(V, "assets", "_capa-bicho.png")).width
+    meta = json.load(open(os.path.join(V, "assets", "_capa-bicho.json"), encoding="utf-8"))
+    ex, ey = ox + int(meta["olho"][0] * sc), oy + int(meta["olho"][1] * sc)
+    px, py = ox + int(meta["pit"][0] * sc), oy + int(meta["pit"][1] * sc)
+    ra = int(w * 0.082)
+    d.ellipse([ex-ra, ey-ra, ex+ra, ey+ra], fill=(250,213,11), outline=(20,16,8), width=6)
+    ri = int(ra*0.76)
+    d.ellipse([ex-ri, ey-ri, ex+ri, ey+ri], fill=(246,240,238), outline=(20,16,8), width=5)
+    pr = int(ri*0.52)
+    d.ellipse([ex-pr, ey-pr, ex+pr, ey+pr], fill=(18,14,10))
+    d.ellipse([ex-pr, ey-pr, ex-pr+pr//2, ey-pr+pr//2], fill=(255,255,255))
+    # anel na fosseta
+    rp = int(w * 0.055)
+    d.ellipse([px-rp, py-rp, px+rp, py+rp], outline=(250,213,11), width=10)
+    d.ellipse([px-rp-10, py-rp-10, px+rp+10, py+rp+10], outline=(0,0,0), width=5)
+
+    big = ImageFont.truetype(F + "impact.ttf", int(w * 0.175))
+    st = int(w * 0.013)
+    d.text((w//2, int(h*0.17)), "VENENO", font=big, fill=(229,57,53),
+           stroke_width=st, stroke_fill=(0,0,0), anchor="mm")
+    d.text((w//2, int(h*0.17) + int(w*0.155)), "→ REMÉDIO", font=big, fill=(245,221,11),
+           stroke_width=st, stroke_fill=(0,0,0), anchor="mm")
+    im.convert("RGB").save(os.path.join(ENT, nome), quality=93)
+    print("capa:", nome, (w, h))
+
+comp_capa(1080, 1920, "ONC-001-capa-universal.jpg")
+comp_capa(1080, 1440, "ONC-001-capa-tiktok.jpg")
 
 shutil.copy(os.path.join(V, "08-video.mp4"), os.path.join(ENT, "ONC-001-jararaca-remedio.mp4"))
 print("mp4 copiado")

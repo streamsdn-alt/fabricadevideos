@@ -1,26 +1,42 @@
-# ONC-001 — Avaliação
+# ONC-001 — Avaliação (versão 2, estilo oficial)
 
-**Etapa 9.** Conferido no vídeo montado e na folha de quadros (`08-quadros.png`, um quadro a cada 2 s).
-Aprova só com **todas as notas ≥ 8**.
+**Etapa 9.** Conferido no vídeo montado e na folha de quadros (`08-quadros.png`).
+Aprova só com **todas as notas ≥ 8**. Critérios novos do `GUIA-ONCA.md` de 25/11/2026.
 
 ## Notas
 
 | Item | Nota | Por quê |
 |---|---|---|
-| Fidelidade | **9** | O texto enviado ao sintetizador bate palavra por palavra com o `03-roteiro.md`, nas 7 frases. Tira 1 porque a pronúncia não foi conferida de ouvido (sem transcrição automática no ambiente). |
-| Imagem × tema | **8** | Nos 7 quadros em que a cobra aparece (0, 2, 4, 6, 8, 10, 16, 24, 26 s) é *Bothrops jararaca* identificada no iNaturalist. Nenhuma cobra genérica. Tira 2 pelo fundo da cena 7, um render 3D de fundo azul chapado que destoa do resto, e pelo clipe de "folhas" que na verdade é cachoeira. |
-| Gancho | **9** | No frame 0 já estão a cabeça, o círculo vermelho na fosseta e o texto grande "ESSE BURACO VÊ CALOR". A parte estranha e o fato impossível aparecem juntos no 1º segundo. |
-| Ritmo | **9** | 9 cenas em 26,53 s. A maior é a do Onçômetro (4,89 s) e ela tem 4 batidas internas. Nenhum trecho passa de 2,9 s sem mudança. Duração dentro de 25–30 s. |
+| Fidelidade | **9** | O texto enviado ao ElevenLabs bate palavra por palavra com o `03-roteiro.md`, nas 7 frases. Tira 1 porque a pronúncia não foi conferida de ouvido — não há transcrição automática neste ambiente. |
+| Imagem × tema | **9** | Em todos os planos com bicho é *Bothrops jararaca* identificada no iNaturalist. Tira 1 porque entre 14 s e 20 s o recorte dos comprimidos encosta na cabeça da cobra e o quadro fica apertado. |
+| Gancho | **10** | No quadro 0 já estão a cabeça, o anel amarelo na fosseta, a seta e o texto-gancho **em tamanho cheio** — não entra crescendo. |
+| Ritmo | **9** | 8 beats em 31,63 s. O maior é o do Onçômetro, com 5,43 s, mas ele tem 4 batidas internas (uma barra a cada ~0,8 s), igual ao canal, que segura o painel de 5 a 6 s. Nenhum trecho passa de ~1,9 s sem mudança. |
+| **Estilo do canal** | **10** | 8 de 8 itens medíveis passam. Tabela abaixo. |
 | Técnica | **6** | **REPROVA.** Ver abaixo. |
-| Licenças | **10** | Os 10 assets usados estão no `06-creditos.md` com banco, ID, autor, licença e link. Só CC BY e Pixabay. O asset com marca ("Tensoval") foi pego e trocado. |
+| Licenças | **10** | Todos os assets usados estão no `06-creditos.md` com banco, ID, autor, licença e link. Só CC BY e Pixabay. |
 
-## Técnica — por que reprova
+## Os 8 itens medíveis do estilo
 
-1. **Sem trilha.** O guia pede música da Biblioteca de Áudio do YouTube a ~−24 dB abaixo da voz, abaixando sob a fala. A pasta `musicas/` está vazia e a regra proíbe música de qualquer outra fonte. O vídeo saiu com voz seca. **Isso sozinho já reprova.**
-2. **A voz não é a do canal.** É a voz local do Windows (feminina, de sistema), usada só para o piloto não travar. A voz do canal é a masculina do ElevenLabs, bloqueada por falta da permissão `text_to_speech` na chave.
-3. **Sem efeitos sonoros** nos efeitos visuais, pelo mesmo motivo do item 1.
+| # | Item | Exigência | Medido | |
+|---|---|---|---|---|
+| 1 | Brilho médio | ≥ 110 | **120,0** (mín. 60,4 na cartela final, máx. 128,8) | ✅ |
+| 2 | Um cenário só | 1 | **1** — `foto-9618231.jpg`, do início ao fim, com Ken Burns lento | ✅ |
+| 3 | Bicho 20–30% da altura, terço inferior | 20–30% | **26,0%** (500 px de 1920), base em y = 1830 | ✅ |
+| 4 | Contorno branco de adesivo | em todo recorte | cobra e comprimidos, 13 px | ✅ |
+| 5 | Olho de desenho com anel amarelo | maior parte dos planos | **7 de 7** beats com bicho | ✅ |
+| 6 | 3 camadas de texto | 3 | legenda topo sem caixa (chave em amarelo) + destaque gigante amarelo + frase que acumula | ✅ |
+| 7 | Onçômetro painel sobre a cena com nome do bicho | sim | painel de 876 px sobre o cenário, cobra visível abaixo, "JARARACA" no cabeçalho | ✅ |
+| 8 | Efeitos desenhados | nada de filtro | cone de calor vetorial, anel + seta na fosseta, carimbo "VENENO", X vermelho, check verde, "1981" gigante, silhueta de cupinzeiro | ✅ |
 
-O que está bom em técnica: loudness integrado **−15,6 LUFS**, pico **−1,3 dBTP** (sem estouro e sem corte), legenda sincronizada com a narração real, nada escrito acima de 165 px nem abaixo de 1755 px, nenhuma marca-d'água, nenhum texto cortado.
+Duração: **31,63 s** — dentro de 28 a 33 s, bem abaixo do corte de 36 s.
+
+## Técnica — por que ainda reprova
+
+**Um motivo só, e é o mesmo da versão anterior: o vídeo saiu sem trilha.**
+
+A pasta `musicas/` continua com apenas o `README.md`. O guia manda trilha da Biblioteca de Áudio do YouTube a ~−24 dB abaixo da voz, abaixando sob a fala, mais efeitos sonoros nos efeitos visuais. A regra proíbe música de qualquer outra fonte, então o vídeo foi entregue com voz seca.
+
+O resto de técnica está bom: loudness integrado **−15,3 LUFS**, pico **−1,3 dBTP** (sem estouro e sem corte), legenda sincronizada com a narração real, nada escrito acima de 165 px nem abaixo de 1755 px, sem marca-d'água e sem texto cortado.
 
 ## Correções feitas antes desta avaliação
 
@@ -30,32 +46,39 @@ Duas voltas, dentro do limite do manual.
 
 | Cena / tempo | Problema | Correção |
 |---|---|---|
-| 14,0 s (cena 6) | **Marca "Tensoval" legível no aparelho de pressão.** Viola regra de marcas. | Trocado pelo asset 1584223 (estetoscópio, sem marca). |
-| 0,0 s (cena 1) | O texto-gancho só entrava a partir de ~0,2 s. O guia exige **no frame 0**. | Passou a aparecer desde o primeiro quadro. |
-| 8,0 s (cena 4) | A cobra ainda estava entrando e aparecia só um pedaço na borda. | Entrada acelerada, com easing, e cobra enquadrada. |
-| 18,0 s (cena 8) | Rótulo "ONÇÔMETRO" desenhado **duas vezes** (legenda + rótulo da cena). | Rótulo removido; fica só a legenda. |
-| 18,0–19,0 s (cena 8) | As 4 barras ficavam vazias no começo da cena. | Preenchimento começa no primeiro quadro da cena. |
+| 10 s (beat "veneno") | **O recorte virou uma mancha branca.** O alfa fantasma do corpo semitransparente foi engordado pelo contorno de adesivo e cobriu a cobra. | `limpa_alfa()` corta o alfa em 150 antes do contorno. Virou regra no guia. |
+| 0 s | O texto-gancho entrava crescendo e aparecia pequeno no quadro 0. O guia exige **tamanho cheio no frame 0**. | A batida de entrada caiu de 1,6× para 0,28×. |
+| 6 s–8 s | O cone de calor estava fino e quase invisível. | Alcance de 560 para 680 px, abertura de 150 para 205, opacidade e espessura das ondas aumentadas. |
+| 12 s–20 s | O comprimido entrava pequeno e escondido atrás da cabeça. | De 480 para 620 px e reposicionado acima da cobra. |
+| 30 s | A silhueta do cupinzeiro era um triângulo tosco. | Virou curva de sino com estrias verticais, no traço amarelo do canal. |
 
-**2ª volta — 1 reprovação:**
+**2ª volta:** nenhuma. A primeira volta resolveu os cinco.
 
-| Cena / tempo | Problema | Correção |
+## Comparação com a versão 1
+
+| | v1 (documentário) | v2 (estilo do canal) |
 |---|---|---|
-| 8,0–10,0 s e 16,0 s (cenas 4 e 7) | A cobra enrolada ocupa só **20% de pixels opacos** depois do recorte: no 9×16 ela vira um risco fino num fundo marrom vazio. | Trocada pela cabeça recortada, que preenche o quadro. Conferido na folha de quadros. |
+| Brilho médio | 55 | **120,0** |
+| Cenários | 6 | **1** |
+| Bicho | close ocupando quase a tela | **26% da altura, terço inferior** |
+| Contorno de adesivo | não | **sim** |
+| Olho com anel amarelo | 1 plano de 9 | **7 de 7** |
+| Camadas de texto | 1 (com caixa preta) | **3** |
+| Onçômetro | cena de tela cheia, fundo preto, sem nome | **painel sobre a cena, com "JARARACA"** |
+| Efeitos | filtro térmico e varredura | **desenhados** |
+| Duração | 26,53 s | **31,63 s** |
+| Voz | Windows (rascunho) | **ElevenLabs "daniel narrador", eleven_v4** |
 
 ## Resultado
 
-**REPROVADO na etapa 9** — nota de Técnica 6, abaixo de 8.
+**REPROVADO na etapa 9** — Técnica 6, abaixo de 8. Nota de estilo **10**.
 
-Os dois motivos da reprova **dependem do dono**, não da equipe:
+**Falta uma coisa só: trilha.** Resolvido isso, é refazer a etapa 8 (só a mixagem, nem precisa re-renderizar os quadros) e reavaliar. Tudo o mais está aprovado.
 
-1. liberar a permissão `text_to_speech` na chave do ElevenLabs;
-2. colocar ao menos uma trilha e alguns efeitos da Biblioteca de Áudio do YouTube na pasta `musicas/`.
-
-Resolvidos os dois, é refazer só as etapas 7 e 8 (narração e montagem) — o roteiro, os fatos, as cenas e os assets já estão aprovados e não se mexe neles.
-
-A pasta `Entrega/` foi montada mesmo assim, para o dono ver o piloto e julgar roteiro, corte e imagem. **Não é material publicável.**
+A pasta `Entrega/` foi montada para o dono ver o resultado. **Não é material publicável.**
 
 ## Riscos anotados
 
 - Pronúncia de "Rraw!" e "fosseta loreal" não conferida de ouvido.
 - Texto integral de Ferreira (1965) e Ondetti (1971) não lido (paywall). O roteiro não afirma nada além do que o registro primário do NCBI já diz.
+- A cartela final (29,9 s a 31,6 s) tem véu escuro e puxa o brilho mínimo para 60,4. A média fica em 120,0 e passa, mas se a cartela crescer em vídeos futuros isso precisa ser revisto.

@@ -10,12 +10,8 @@
 | `inat-348275850.jpg` | iNaturalist | 348275850 | Pedro Alvaro Neves | **CC BY** | <https://www.inaturalist.org/observations/196328139> |
 | `inat-348275873.jpg` | iNaturalist | 348275873 | Pedro Alvaro Neves | **CC BY** | <https://www.inaturalist.org/observations/196328139> |
 | `inat-348275890.jpg` | iNaturalist | 348275890 | Pedro Alvaro Neves | **CC BY** | <https://www.inaturalist.org/observations/196328139> |
-| `px-jungle_leaves-183638.mp4` | Pixabay | 183638 | Mujibarsk_786 | Pixabay Content License | <https://pixabay.com/videos/id-183638/> |
-| `px-forest_night-11721.mp4` | Pixabay | 11721 | Iconikmg | Pixabay Content License | <https://pixabay.com/videos/id-11721/> |
-| `px-rainforest_floor-23.mp4` | Pixabay | 23 | DistillVideos | Pixabay Content License | <https://pixabay.com/videos/id-23/> |
-| `px-pills_medicine-1539191.jpg` | Pixabay | 1539191 | stevepb | Pixabay Content License | <https://pixabay.com/photos/thermometer-medications-tablets-1539191/> |
+| `fundos/foto-9618231.jpg` | Pixabay | 9618231 | ignartonosbg | Pixabay Content License | <https://pixabay.com/photos/leaves-green-nature-plant-tree-9618231/> |
 | `px-pills_medicine-8287535.jpg` | Pixabay | 8287535 | kravaivan11 | Pixabay Content License | <https://pixabay.com/photos/medicine-pills-medication-bottle-8287535/> |
-| `px-blood_pressure_monitor-1584223.jpg` | Pixabay | 1584223 | Bru-nO | Pixabay Content License | <https://pixabay.com/photos/blood-pressure-stethoscope-medical-1584223/> |
 
 **Atribuição obrigatória na descrição do vídeo:** as quatro fotos da jararaca são CC BY de **Pedro Alvaro Neves** (iNaturalist). Pixabay não exige atribuição, mas os autores vão creditados do mesmo jeito.
 
@@ -31,9 +27,17 @@ As quatro imagens do bicho são de observações identificadas como ***Bothrops 
 |---|---|
 | `px-blood_pressure_monitor-867855.jpg` | **Marca visível no aparelho ("Tensoval").** Viola a regra de não usar logo nem marca. Trocado por `px-blood_pressure_monitor-1584223.jpg`, que não tem marca legível. Arquivo mantido na pasta como registro da reprovação, **proibido de usar**. |
 
-## Observação sobre o termo de busca
+## O cenário (versão 2)
 
-`px-jungle_leaves-183638.mp4` foi baixado pelo termo "jungle leaves", mas o clipe mostra **uma cachoeira em mata fechada**, não folhas. Foi mantido porque serve como habitat de mata e funciona nas cenas 1, 2 e 9 — mas o plano de cenas dizia "folhas". Fica registrado para o termo ser corrigido no próximo vídeo.
+Agora o vídeo tem **um cenário só**, como manda o guia: `fundos/foto-9618231.jpg`, foto real de sub-bosque de mata — tronco com folhas grandes e luz entrando. **Brilho medido 117,6** antes de qualquer tratamento; no vídeo montado a média fica em **120,0**, acima do mínimo de 110.
+
+Tratamento aplicado: realce de cor (1,14) e de contraste (1,08), mais um Ken Burns lento de 7%. **Não foi escurecido nem desfocado**, como a regra exige.
+
+### Por que este e não outro
+
+Foram baixados e medidos **91 candidatos** (6 vídeos e 85 fotos) do Pixabay. Os mais claros pelo número eram pássaro, neve e duna — brilho alto, conteúdo errado. Filtrando também por verde dominante sobraram poucos, e este foi o único com sub-bosque de mata real, claro, sem gente e sem objeto construído. Os descartados ficam registrados em `assets/fundos/_fotos.json` e `_fotos2.json`.
+
+Os clipes e fotos da versão 1 (`px-jungle_leaves-183638.mp4`, `px-forest_night-11721.mp4`, `px-rainforest_floor-23.mp4`, `px-blood_pressure_monitor-1584223.jpg`, `px-pills_medicine-1539191.jpg`) **saíram do vídeo** — eram seis cenários diferentes e escurecidos. Ficam na pasta como registro.
 
 ## Assets baixados e não usados
 

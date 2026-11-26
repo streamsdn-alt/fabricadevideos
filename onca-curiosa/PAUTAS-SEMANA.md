@@ -72,6 +72,30 @@ Todas conferidas contra `../FATOS-USADOS.md`: nenhum fato repete os já usados (
 
 ---
 
+---
+
+## Formato de cada pauta (decidido em 25/11/2026)
+
+Os três formatos estão aprovados. **Quiz em 2 das 6**, não em todas — o teste "quiz × sem quiz" vai ser avaliado em **03/12/2026**, e misturar tudo estraga a leitura do resultado.
+
+| Vídeo | Bicho | Formato | Por quê |
+|---|---|---|---|
+| ONC-001 | jararaca | **fato único** | já produzido |
+| ONC-002 | cupinzeiros | **fato único** | o gancho é o mistério da rainha; quiz estragaria o final em aberto |
+| ONC-003 | beija-flor | **QUIZ** | "A quantos graus o corpo dele chega à noite?" — A 20° / B 10° / C 3° |
+| ONC-004 | formiga cortadeira | **fato único** | o vídeo é um desmonte de erro comum, que já é a própria virada |
+| ONC-005 | preguiça | **fato único** | termina em dúvida honesta; não cabe resposta certa |
+| ONC-006 | morcego-vampiro | **QUIZ** | "Quantas noites sem comer ele aguenta?" — A 10 / B 5 / C 2 |
+| ONC-007 | rola-bosta | **RANKING** | ver observação abaixo |
+
+**Grupo de controle do teste:** ONC-002, ONC-004 e ONC-005 saem sem quiz, no mesmo período das duas com quiz. Três contra duas dá para comparar retenção em 03/12.
+
+### Observação sobre o ranking (ONC-007)
+
+O formato ranking pede **cinco bichos com cinco fatos conferidos**, não um só. A proposta é **"TOP 5 BICHOS QUE SE ACHAM SEM MAPA"**, com o rola-bosta no **Nº 1** (ele se guia pela Via Láctea) e fecho com **"QUEM É O Nº 4?"** para emendar no próximo.
+
+**Isso depende da Jojo conferir mais quatro fatos de navegação animal antes de o roteiro começar.** Enquanto esses quatro não estiverem na ficha, o ONC-007 fica como **fato único** sobre o rola-bosta, que já está com a fonte conferida. Decisão do dono: abrir a pesquisa dos outros quatro ou manter fato único.
+
 ## Variação (regra contra conteúdo repetitivo em série)
 
 | Vídeo | Grupo | Estrutura |

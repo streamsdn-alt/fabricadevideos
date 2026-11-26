@@ -1,116 +1,84 @@
 # ONC-001 — Narração e custo
 
-**Etapa 7.**
+**Etapa 7 (versão 2 — gerada com a voz do canal).**
 
-## ElevenLabs — AINDA BLOQUEADO (2ª tentativa, 25/11/2026)
+## ElevenLabs — FEITO
 
-O dono informou que a permissão `text_to_speech` foi liberada. **Tentei de novo e a API continua recusando**, com exatamente a mesma resposta:
+A chave foi trocada pelo dono e passou a aceitar `text_to_speech`.
 
-```
-HTTP 401
-{"detail":{"type":"authentication_error","code":"unauthorized",
-"message":"The API key you used is missing the permission text_to_speech
-to execute this operation.","status":"missing_permissions"}}
-```
-
-A etapa 7 **parou aqui**, como mandado. Nenhuma outra voz foi usada como substituta.
-
-### Conferência da voz (feita antes de tentar gerar)
-
-O `ELEVENLABS_VOICE_ID` do ambiente aponta para a voz certa:
+### Conferência antes de gerar
 
 | Campo | Valor |
 |---|---|
-| Nome | **"daniel narrador"** |
+| Nome da voz lido na API | **"daniel narrador"** |
 | Gênero / sotaque | masculino, pt-brazilian |
 | Categoria | cloned |
+| Modelo | **`eleven_v4`** |
+| Velocidade | **`speed: 1.2`** (+20%, como manda o guia) |
 
-### O que a chave consegue e não consegue
+O `scripts/narrar.py` só gera depois de confirmar o nome da voz pela API; se o nome não bater, ele para. A chave nunca é impressa — só a impressão digital (SHA-256), que mudou de `2bab327ca9` para `bd69fb5123`, confirmando que é outra chave.
 
-| Chamada | Resultado |
-|---|---|
-| `GET /v1/voices` | 200 |
-| `GET /v1/models` | 200 |
-| `GET /v1/user/subscription` | 200 |
-| `GET /v1/history` | **401 missing_permissions** |
-| `POST /v1/text-to-speech` | **401 missing_permissions** |
-
-Ou seja: a chave autentica e lê, mas **não tem nem `text_to_speech` nem acesso ao histórico**. É uma chave só de leitura.
-
-### Identificação da conta (para o dono conferir se mexeu na chave certa)
-
-| Campo | Valor |
-|---|---|
-| `user_id` | `user_7901m81g6ggxe1vvsj7ph14eynbk` |
-| workspace | nenhum |
-| plano | starter |
-| saldo | 14.515 de 40.000 caracteres usados |
-| chave: prefixo / tamanho | `sk_...` / 51 caracteres |
-| chave: impressão digital (SHA-256, 10 primeiros) | `2bab327ca9` |
-
-A impressão digital é um hash, não a chave. Serve para o dono confirmar se a chave que ele editou é a mesma que está no meu ambiente — **se for outra, o problema é que o ambiente tem a chave antiga.**
-
-### Parâmetros prontos para quando liberar
+### Caracteres e saldo
 
 | Item | Valor |
 |---|---|
-| Modelo | `eleven_v4` (confirmado disponível na conta) |
-| Voz | `daniel narrador` |
-| Velocidade | `speed: 1.2` (+20%) |
-| Custo previsto | **430 caracteres** (~1,7% do saldo) |
+| Caracteres enviados (7 frases) | **458** |
+| Contador da conta antes | 14.515 |
+| Contador da conta depois | **14.700** |
+| Variação do contador | **+185** |
+| Saldo restante | **25.300 de 40.000** |
 
-**Créditos gastos até agora: ZERO.** As duas tentativas falharam antes de sintetizar qualquer caractere.
-
-## Voz de rascunho (o que está no vídeo atual — a ser substituída)
-
-Para o piloto não travar, a narração foi gerada **local e de graça** com a voz do Windows **Microsoft Maria Desktop (pt-BR)**, via `System.Speech`. Custo: **R$ 0,00**, nenhuma API paga.
-
-**Isto é um rascunho, não a voz do canal.** É voz feminina sintética de sistema; o canal usa a masculina do ElevenLabs. Serve para o dono julgar ritmo, corte e imagem — não o acabamento sonoro.
+> **Nota honesta:** enviei 458 caracteres e o contador da API subiu 185. Não sei explicar a diferença — pode ser cobrança diferente do `eleven_v4` ou atraso na contabilização. **O número que vale é o do contador da conta.** Vou conferir de novo no próximo vídeo; se a diferença se repetir, registro o padrão.
 
 ## Ajuste de ritmo
 
-Bruto, na velocidade da leitura: **36,16 s** — acima do limite de ~32 s do guia.
+Bruto, como veio do ElevenLabs a +20%: **34,96 s**.
 
-Tratamento: corte de silêncio nas pontas de cada frase, `atempo` e normalização. Testes:
+Tratamento: corte de silêncio nas pontas de cada frase, `atempo` e normalização.
 
-| atempo | Duração | Palavras/s |
+| atempo | Duração da fala | Palavras/s |
 |---|---|---|
-| 1,15 | 27,20 s | 2,90 |
-| **1,18** | **26,52 s** | **2,98** |
-| 1,20 | 26,09 s | 3,03 |
-| 1,30 | 24,08 s | — (abaixo da faixa) |
+| 1,00 | 34,27 s | 2,31 |
+| 1,08 | 31,83 s | 2,48 |
+| **1,15** | **29,92 s** | **2,64** |
 
-**Escolhido: `atempo=1,18`** — é o que cai em cima dos ~3 palavras/s do guia e dentro da faixa de 25 a 30 s.
+**Escolhido `atempo=1,15`.** Com a cartela final de 1,7 s, o vídeo fecha em **31,63 s** — dentro da faixa nova de 28 a 33 s e longe do corte de 36 s.
 
-O guia pede "+20% no ElevenLabs e atempo 1,10" (1,32x no total). Aqui a voz é outra, com ritmo natural diferente, então o valor foi **medido** em vez de copiado. Quando a voz do ElevenLabs entrar, o ajuste é refeito do mesmo jeito: medir, não presumir.
+O guia pedia "atempo 1,10" como número fixo. Aqui ele foi **medido**, não copiado: a voz é outra e o alvo de duração mudou. O guia já foi corrigido para mandar medir.
+
+> **Observação levada para o guia:** com 79 palavras em 31,6 s o ritmo fica em 2,64 palavras/s. Para chegar aos ~3 palavras/s do canal **nessa faixa de duração, o roteiro precisa de 85 a 100 palavras**. O ONC-001 ficou com as 79 do roteiro já aprovado pela Jojo — mexer no texto obrigaria a refazer as etapas 3 e 4. O `GUIA-ONCA.md` já está com a contagem nova para os próximos.
 
 ## Frases e tempos finais
 
 | # | Entra | Sai | Duração | Palavras |
 |---|---|---|---|---|
-| 1 | 0,00 | 2,58 | 2,58 s | 8 |
-| 2 | 2,61 | 7,48 | 4,87 s | 16 |
-| 3 | 7,51 | 10,35 | 2,84 s | 9 |
-| 4 | 10,37 | 14,75 | 4,37 s | 15 |
-| 5 | 14,77 | 17,96 | 3,19 s | 10 |
-| 6 | 17,99 | 22,88 | 4,89 s | 9 |
-| 7 | 22,90 | 26,52 | 3,62 s | 12 |
+| 1 | 0,00 | 3,04 | 3,04 s | 8 |
+| 2 | 3,06 | 8,33 | 5,27 s | 16 |
+| 3 | 8,36 | 11,82 | 3,46 s | 9 |
+| 4 | 11,84 | 16,69 | 4,85 s | 15 |
+| 5 | 16,72 | 20,30 | 3,58 s | 10 |
+| 6 | 20,32 | 25,73 | 5,41 s | 9 |
+| 7 | 25,75 | 29,92 | 4,17 s | 12 |
+| — | 29,92 | 31,62 | 1,70 s | cartela final, sem fala |
 
-**Total: 26,52 s, 79 palavras, 2,98 palavras/s.** Intervalo entre frases: 0,025 s (guia pede 0,02 a 0,03 s).
+Intervalo entre frases: 0,025 s (guia pede 0,02 a 0,03 s).
 
 ## Conferência do texto falado
 
-Feita por leitura do texto enviado ao sintetizador contra o `03-roteiro.md`: **bate palavra por palavra**, as 7 frases.
+O texto enviado ao ElevenLabs bate palavra por palavra com o `03-roteiro.md`, nas 7 frases.
 
-**Não foi possível conferir de ouvido.** Não há transcrição automática instalada neste ambiente, então a pronúncia não foi verificada — em especial **"Rraw!"** (onomatopeia) e **"fosseta loreal"**. Fica como risco anotado na avaliação. Quando a voz definitiva for gerada, conferir de ouvido antes de aprovar.
+**Não foi possível conferir de ouvido** — não há transcrição automática neste ambiente. A pronúncia de "Rraw!" e de "fosseta loreal" segue como risco anotado na avaliação.
+
+## A voz de rascunho saiu
+
+A narração local do Windows usada na versão 1 **foi descartada**. Os arquivos `audio/f*.wav` ficam na pasta só como registro; o `07-narracao.wav` é a voz do canal.
 
 ## Custo total do vídeo
 
 | Item | Custo |
 |---|---|
 | Imagens (iNaturalist, Pixabay) | R$ 0,00 — APIs gratuitas |
-| Narração (voz local do Windows) | R$ 0,00 |
 | Recorte (rembg, local) | R$ 0,00 |
 | Montagem (Python + ffmpeg, local) | R$ 0,00 |
-| ElevenLabs | **0 créditos** (bloqueado antes de gastar) |
-| **Total** | **R$ 0,00** |
+| Narração (ElevenLabs) | **185 caracteres** pelo contador da conta |
+| **Dinheiro gasto** | **R$ 0,00** (dentro do plano já assinado) |

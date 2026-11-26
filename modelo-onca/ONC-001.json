@@ -1,0 +1,611 @@
+{
+ "_obs": "Roteiro de montagem do ONC-001 (jararaca) no modelo da Onça. Tempos em segundos, posições em pixels do quadro 1080x1920. Pontos do bicho (olho, fosseta, boca) em pixels da foto recortada original.",
+ "timeline": "../onca-curiosa/ONC-001-jararaca-remedio/audio/_timeline.json",
+ "narracao": "../onca-curiosa/ONC-001-jararaca-remedio/07-narracao.wav",
+ "fundo": "fundo.png",
+ "palavras_chave": [
+  "BURACO",
+  "CALOR",
+  "JARARACA",
+  "FOSSETA",
+  "LOREAL",
+  "CÂMERA",
+  "TÉRMICA",
+  "VENENO",
+  "PRESSÃO",
+  "CAPTOPRIL",
+  "REMÉDIO",
+  "ONÇÔMETRO",
+  "RRAW",
+  "MIL",
+  "NOVECENTOS",
+  "OITENTA",
+  "DESENHADO"
+ ],
+ "bichos": {
+  "lingua": {
+   "arquivo": "../onca-curiosa/ONC-001-jararaca-remedio/assets/inat-348275825-recorte.png",
+   "largura": 760,
+   "cortado": "dir",
+   "olho": [
+    790,
+    265,
+    72
+   ],
+   "fosseta": [
+    610,
+    310
+   ],
+   "boca": [
+    330,
+    350
+   ],
+   "olhar": [
+    -0.6,
+    0.1
+   ]
+  },
+  "close": {
+   "arquivo": "../onca-curiosa/ONC-001-jararaca-remedio/assets/inat-348275850-recorte.png",
+   "largura": 760,
+   "cortado": "dir",
+   "olho": [
+    757,
+    285,
+    88
+   ],
+   "fosseta": [
+    565,
+    300
+   ],
+   "boca": [
+    330,
+    330
+   ],
+   "olhar": [
+    -0.6,
+    0.1
+   ]
+  },
+  "pescoco": {
+   "arquivo": "../onca-curiosa/ONC-001-jararaca-remedio/assets/inat-348275890-recorte.png",
+   "largura": 820,
+   "cortado": "esq",
+   "olho": [
+    655,
+    278,
+    50
+   ],
+   "fosseta": [
+    765,
+    290
+   ],
+   "boca": [
+    870,
+    305
+   ],
+   "olhar": [
+    0.6,
+    0.1
+   ],
+   "olho_fator": 1.6
+  }
+ },
+ "objetos": {
+  "frasco": "../onca-curiosa/ONC-001-jararaca-remedio/assets/px-pills_medicine-8287535-recorte.png"
+ },
+ "camera": [
+  {
+   "de": 0,
+   "ate": 3.06,
+   "zoom": 1.0,
+   "y": 0.5
+  },
+  {
+   "de": 3.06,
+   "ate": 5.57,
+   "zoom": 1.3,
+   "x": 0.55,
+   "y": 0.62
+  },
+  {
+   "de": 5.57,
+   "ate": 8.36,
+   "zoom": 1.0,
+   "y": 0.5
+  },
+  {
+   "de": 8.36,
+   "ate": 11.84,
+   "zoom": 1.15,
+   "x": 0.35,
+   "y": 0.55,
+   "tremida": 0.3
+  },
+  {
+   "de": 11.84,
+   "ate": 14.22,
+   "zoom": 1.0,
+   "y": 0.5
+  },
+  {
+   "de": 14.22,
+   "ate": 16.72,
+   "zoom": 1.25,
+   "x": 0.62,
+   "y": 0.5
+  },
+  {
+   "de": 16.72,
+   "ate": 20.32,
+   "zoom": 1.05,
+   "y": 0.45
+  },
+  {
+   "de": 20.32,
+   "ate": 25.75,
+   "zoom": 1.0,
+   "y": 0.5
+  },
+  {
+   "de": 25.75,
+   "ate": 29.6,
+   "zoom": 1.35,
+   "y": 0.6,
+   "tremida": 0.35
+  },
+  {
+   "de": 29.6,
+   "ate": 40,
+   "zoom": 1.0,
+   "y": 0.5
+  }
+ ],
+ "cenas_bicho": [
+  {
+   "de": 0,
+   "ate": 3.06,
+   "bicho": "lingua",
+   "x": 1100,
+   "y": 1480,
+   "ancora": [
+    1.0,
+    0.5
+   ],
+   "entrada": 0,
+   "efeitos": [
+    {
+     "tipo": "anel",
+     "de": 0.0
+    },
+    {
+     "tipo": "seta",
+     "de": 0.5,
+     "dx": -230,
+     "dy": -330,
+     "fx": -40,
+     "fy": -55
+    }
+   ]
+  },
+  {
+   "de": 3.06,
+   "ate": 5.57,
+   "bicho": "close",
+   "x": 1100,
+   "y": 1430,
+   "escala": 1.25,
+   "ancora": [
+    1.0,
+    0.5
+   ],
+   "entrada": 0,
+   "efeitos": [
+    {
+     "tipo": "anel",
+     "de": 0.0
+    },
+    {
+     "tipo": "rotulo",
+     "de": 0.3,
+     "texto": "FOSSETA LOREAL",
+     "x": 420,
+     "y": 930
+    }
+   ]
+  },
+  {
+   "de": 5.57,
+   "ate": 8.36,
+   "bicho": "lingua",
+   "x": 1100,
+   "y": 1520,
+   "ancora": [
+    1.0,
+    0.5
+   ],
+   "entrada": 0.3,
+   "vem_de": "dir",
+   "efeitos": [
+    {
+     "tipo": "calor",
+     "de": 0.2,
+     "dir": -1
+    },
+    {
+     "tipo": "anel",
+     "de": 0.0
+    }
+   ]
+  },
+  {
+   "de": 8.36,
+   "ate": 11.84,
+   "bicho": "pescoco",
+   "x": -20,
+   "y": 1480,
+   "ancora": [
+    0.0,
+    0.5
+   ],
+   "entrada": 0.35,
+   "vem_de": "esq",
+   "bote": [
+    0.5,
+    90
+   ],
+   "efeitos": [
+    {
+     "tipo": "gotas",
+     "de": 1.3
+    }
+   ]
+  },
+  {
+   "de": 11.84,
+   "ate": 16.72,
+   "bicho": "pescoco",
+   "x": -20,
+   "y": 1580,
+   "escala": 0.85,
+   "ancora": [
+    0.0,
+    0.5
+   ],
+   "entrada": 0
+  },
+  {
+   "de": 16.72,
+   "ate": 20.32,
+   "bicho": "pescoco",
+   "x": -20,
+   "y": 1600,
+   "escala": 0.8,
+   "ancora": [
+    0.0,
+    0.5
+   ],
+   "entrada": 0
+  },
+  {
+   "de": 20.32,
+   "ate": 25.75,
+   "bicho": "lingua",
+   "x": 1100,
+   "y": 1640,
+   "escala": 0.62,
+   "ancora": [
+    1.0,
+    0.5
+   ],
+   "entrada": 0.35,
+   "vem_de": "dir"
+  },
+  {
+   "de": 25.75,
+   "ate": 29.6,
+   "bicho": "close",
+   "x": 1100,
+   "y": 1420,
+   "escala": 1.3,
+   "ancora": [
+    1.0,
+    0.5
+   ],
+   "entrada": 0,
+   "bote": [
+    0.0,
+    -140
+   ],
+   "efeitos": [
+    {
+     "tipo": "anel",
+     "de": 0.6,
+     "ate": 2.0
+    },
+    {
+     "tipo": "gotas",
+     "de": 2.4
+    }
+   ]
+  },
+  {
+   "de": 29.6,
+   "ate": 40,
+   "bicho": "lingua",
+   "x": 1100,
+   "y": 1480,
+   "ancora": [
+    1.0,
+    0.5
+   ],
+   "entrada": 0,
+   "efeitos": [
+    {
+     "tipo": "anel",
+     "de": 0.0
+    }
+   ]
+  }
+ ],
+ "raios": [
+  {
+   "de": 25.75,
+   "ate": 29.6,
+   "x": 540,
+   "y": 720,
+   "alfa": 0.35
+  }
+ ],
+ "efeitos": [
+  {
+   "tipo": "manometro",
+   "de": 10.5,
+   "ate": 11.84,
+   "x": 790,
+   "y": 860,
+   "dur": 1.0
+  },
+  {
+   "tipo": "objeto",
+   "obj": "frasco",
+   "de": 12.3,
+   "ate": 16.72,
+   "x": 770,
+   "y": 1180,
+   "larg": 420
+  },
+  {
+   "tipo": "gotas",
+   "de": 16.72,
+   "ate": 20.32,
+   "x": 300,
+   "y": 700
+  },
+  {
+   "tipo": "x",
+   "de": 17.5,
+   "ate": 20.32,
+   "x": 300,
+   "y": 820,
+   "s": 120
+  },
+  {
+   "tipo": "objeto",
+   "obj": "frasco",
+   "de": 16.9,
+   "ate": 20.32,
+   "x": 790,
+   "y": 830,
+   "larg": 340
+  },
+  {
+   "tipo": "check",
+   "de": 18.1,
+   "ate": 20.32,
+   "x": 790,
+   "y": 840,
+   "s": 110
+  }
+ ],
+ "oncometro": [
+  {
+   "de": 20.32,
+   "ate": 25.75,
+   "nome": "JARARACA",
+   "valores": {
+    "VELOCIDADE": 6,
+    "FORÇA": 4,
+    "ESTRANHEZA": 10,
+    "PERIGO": 9
+   },
+   "barras_em": [
+    21.11,
+    22.41,
+    23.49,
+    24.72
+   ]
+  }
+ ],
+ "frases": [
+  {
+   "de": 0,
+   "ate": 3.06,
+   "texto": "ESSE BURACO\nVÊ CALOR?!",
+   "y": 1000,
+   "tam": 96,
+   "cor": [
+    245,
+    221,
+    11
+   ],
+   "contorno": 11
+  },
+  {
+   "de": 5.57,
+   "ate": 8.36,
+   "texto": "ACHA A PRESA",
+   "y": 720,
+   "tam": 76
+  },
+  {
+   "de": 6.42,
+   "ate": 8.36,
+   "texto": "PELO CALOR",
+   "y": 840,
+   "tam": 76
+  },
+  {
+   "de": 7.43,
+   "ate": 8.36,
+   "texto": "= CÂMERA TÉRMICA",
+   "y": 980,
+   "tam": 86,
+   "cor": [
+    245,
+    221,
+    11
+   ]
+  },
+  {
+   "de": 8.36,
+   "ate": 11.84,
+   "texto": "MAIS ESTRANHO...",
+   "y": 560,
+   "tam": 70
+  },
+  {
+   "de": 10.63,
+   "ate": 11.84,
+   "texto": "DERRUBA A PRESSÃO",
+   "y": 1120,
+   "tam": 80,
+   "cor": [
+    245,
+    221,
+    11
+   ]
+  },
+  {
+   "de": 12.59,
+   "ate": 14.22,
+   "texto": "CAPTOPRIL",
+   "y": 700,
+   "tam": 110,
+   "cor": [
+    245,
+    221,
+    11
+   ]
+  },
+  {
+   "de": 13.13,
+   "ate": 14.22,
+   "texto": "REMÉDIO DE PRESSÃO",
+   "y": 850,
+   "tam": 72
+  },
+  {
+   "de": 14.22,
+   "ate": 16.72,
+   "texto": "APROVADO EM",
+   "y": 540,
+   "tam": 70
+  },
+  {
+   "de": 17.51,
+   "ate": 20.32,
+   "texto": "VENENO",
+   "x": 300,
+   "y": 1010,
+   "tam": 76,
+   "riscar": 0.1
+  },
+  {
+   "de": 18.09,
+   "ate": 20.32,
+   "texto": "REMÉDIO",
+   "x": 790,
+   "y": 1010,
+   "tam": 76,
+   "cor": [
+    80,
+    220,
+    100
+   ]
+  },
+  {
+   "de": 18.82,
+   "ate": 20.32,
+   "texto": "DESENHADO\nA PARTIR DELE",
+   "y": 1200,
+   "tam": 70,
+   "cor": [
+    245,
+    221,
+    11
+   ]
+  },
+  {
+   "de": 26.35,
+   "ate": 29.6,
+   "texto": "VÊ CALOR",
+   "y": 640,
+   "tam": 112,
+   "cor": [
+    245,
+    221,
+    11
+   ]
+  },
+  {
+   "de": 28.96,
+   "ate": 29.6,
+   "texto": "VIROU REMÉDIO!",
+   "y": 800,
+   "tam": 104
+  },
+  {
+   "de": 29.6,
+   "ate": 40,
+   "texto": "ESSE BURACO\nVÊ CALOR?!",
+   "y": 1000,
+   "tam": 96,
+   "cor": [
+    245,
+    221,
+    11
+   ],
+   "contorno": 11
+  }
+ ],
+ "destaques": [
+  {
+   "de": 9.83,
+   "ate": 10.63,
+   "texto": "VENENO",
+   "y": 720,
+   "tam": 160,
+   "cor": [
+    110,
+    220,
+    70
+   ]
+  },
+  {
+   "de": 14.91,
+   "ate": 16.72,
+   "texto": "1981",
+   "y": 720,
+   "tam": 240
+  },
+  {
+   "de": 25.75,
+   "ate": 26.35,
+   "texto": "RRAW!",
+   "y": 760,
+   "tam": 210,
+   "rot": -8
+  }
+ ]
+}
